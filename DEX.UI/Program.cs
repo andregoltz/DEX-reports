@@ -6,9 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient("MyClient", client =>
+builder.Services.AddHttpClient("BlazorContentClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7143/");
+});
+
+builder.Services.AddHttpClient("BackendClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7037/");
 });
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
