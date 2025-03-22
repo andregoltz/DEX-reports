@@ -21,11 +21,11 @@ Global
 		{1DD70466-03CB-4791-944C-074BE7DF43C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DD70466-03CB-4791-944C-074BE7DF43C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DD70466-03CB-4791-944C-074BE7DF43C5}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
+
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74C45102-5E68-4BFC-A358-67E2CBDF8F1D}
+	GlobalSection(NestedProjects) = preSolution
+		{AF8B7279-8E81-45AA-BA9D-187502247CA0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+
 	EndGlobalSection
 EndGlobal
