@@ -1,4 +1,5 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @inject IHttpClientFactory HttpClientFactory
 @inject IConfiguration Configuration
 @using System.Text
@@ -6,21 +7,22 @@
 <PageTitle>Home</PageTitle>
 
 <h3>DEX File Sender</h3>
-<button @onclick='(() => SendDex("Machine A"))'>Send DEX - Machine A</button>
-<button @onclick='(() => SendDex("Machine B"))'>Send DEX - Machine B</button>
-
+<button type="button" @onclick='() => SendDex("Machine A")'>Send DEX - Machine A</button>
+<button type="button" @onclick='() => SendDex("Machine B")'>Send DEX - Machine B</button>
 
 
 @code
 {
-    private HttpClient Http => HttpClientFactory.CreateClient("MyClient");
+    private HttpClient ContentHttpClient => HttpClientFactory.CreateClient("BlazorContentClient");
+    private HttpClient ApiHttpClient => HttpClientFactory.CreateClient("BackendClient");
     private string DexReportMachineA = "";
     private string DexReportMachineB = "";
+    private string MachineA = "Machine A";
 
     protected override async Task OnInitializedAsync()
     {
-        DexReportMachineA = await Http.GetStringAsync("DEX_Machine_A.txt");
-        DexReportMachineB = await Http.GetStringAsync("DEX_Machine_B.txt");
+        DexReportMachineA = await ContentHttpClient.GetStringAsync("DEX_Machine_A.txt");
+        DexReportMachineB = await ContentHttpClient.GetStringAsync("DEX_Machine_B.txt");
     }
 
     private async Task SendDex(string machine)
@@ -29,19 +31,24 @@
 
         var username = Configuration["Authentication:Username"];
         var password = Configuration["Authentication:Password"];
-
         var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{password}"));
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "/vdi-dex")
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/vdi-dex")
             {
-                Content = new StringContent($"\"{dexData}\"", Encoding.UTF8, "application/json")
+                Content = new StringContent($"{{\"dexFile\": \"{dexData}\"}}", Encoding.UTF8, "application/json")
             };
 
         request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
 
-        var response = await Http.SendAsync(request);
-        var result = await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine(dexData);
+        try
+        {
+            var response = await ApiHttpClient.SendAsync(request);
+            var result = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("API Response: " + result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending DEX: {ex.Message}");
+        }
     }
 }
