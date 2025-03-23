@@ -22,4 +22,4 @@ jobs:
                     include-prerelease: true
 
             - name: Build with dotnet
-              run: dotnet build ./DEX-reports/DEX-reports.sln --configuration Release
+              run: dotnet build ./DEX-reports.sln --configuration Release
