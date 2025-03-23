@@ -25,7 +25,7 @@ namespace DEX.API.AuthenticationHandler
             }
 
             var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(authHeader.Parameter)).Split(':');
+            var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(authHeader?.Parameter)).Split(':');
             if (credentials.Length != 2)
             {
                 return AuthenticateResult.Fail("Invalid Authorization Header");

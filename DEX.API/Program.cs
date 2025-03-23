@@ -1,16 +1,7 @@
-using DEX.API.AuthenticationHandler;
 using DEX.API.Extensions;
-using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.AddOpenApi();
-builder.AddCors();
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication("BasicAuthentication")
-    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+builder.AddConfiguration();
 
 
 var app = builder.Build();
