@@ -20,7 +20,7 @@ namespace DEX.API.Extensions
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowBlazorApp",
-                    policy => policy.WithOrigins("https://localhost:7143") // Permitir Blazor
+                    policy => policy.WithOrigins("https://localhost:7143") // Allow Blazor
                                     .AllowAnyMethod()
                                     .AllowAnyHeader());
             });

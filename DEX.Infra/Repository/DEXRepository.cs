@@ -29,7 +29,7 @@ namespace DEX.Infra.Repository
             }
             catch (SqlException)
             {
-                throw;
+                throw new Exception("A record with the same Machine Serial Number and DEX DateTime already exists in the database. Duplicate entries are not allowed.");
             }
             catch (Exception ex)
             {

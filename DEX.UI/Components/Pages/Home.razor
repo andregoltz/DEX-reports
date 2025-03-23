@@ -5,6 +5,7 @@
 @inject IJSRuntime JSRuntime
 @using System.Text
 @using System.Text.Json
+@using System.Text.Json.Serialization
 
 <PageTitle>Home</PageTitle>
 
@@ -17,13 +18,13 @@
     @if (!string.IsNullOrEmpty(SuccessMessage))
     {
         <div class="alert alert-success">
-            <pre>@JsonSerializer.Serialize(SuccessMessage)</pre>
+            <pre>@SuccessMessage</pre>
         </div>
     }
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <div class="alert alert-danger">
-            <pre>@JsonSerializer.Serialize(ErrorMessage)</pre>
+            <pre>@ErrorMessage</pre>
         </div>
     }
 </div>
@@ -73,13 +74,39 @@
 
             if (response.IsSuccessStatusCode)
             {
-                var successResponse = JsonSerializer.Deserialize<SuccessResponse>(result);
-                ShowSuccessMessage($"DEX file saved successfully! DEXMeter ID: {successResponse.dexMeterID}, DEXLaneMeter ID: {successResponse.dexLaneMeterID}");
+                var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                    };
+
+                var successResponse = JsonSerializer.Deserialize<SuccessResponse>(result, options);
+                var message = $@"
+                        Status: {successResponse.status}
+                        Message: {successResponse.message}
+
+                        DEXMeter Details:
+                        - ID: {successResponse.DEXMeterID.ID}
+                        - Machine: {successResponse.DEXMeterID.Machine}
+                        - DEX DateTime: {successResponse.DEXMeterID.DEXDateTime}
+                        - Machine Serial Number: {successResponse.DEXMeterID.MachineSerialNumber}
+                        - Value of Paid Vends: {successResponse.DEXMeterID.ValueOfPaidVends}
+
+                        DEXLaneMeter Details:
+                        - ID: {successResponse.DEXLaneMeterID.ID}
+                        - DEXMeter ID: {successResponse.DEXLaneMeterID.DEXMeterID}
+                        - Product Identifier: {successResponse.DEXLaneMeterID.ProductIdentifier}
+                        - Price: {successResponse.DEXLaneMeterID.Price}
+                        - Number of Vends: {successResponse.DEXLaneMeterID.NumberOfVends}
+                        - Value of Paid Sales: {successResponse.DEXLaneMeterID.ValueOfPaidSales}"
+                            .Replace("\r\n", "\n").Trim();
+
+                ShowSuccessMessage(message);
             }
             else
             {
                 var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(result);
-                ShowErrorMessage($"Failed to save DEX file: {errorResponse.message}");
+                ShowErrorMessage(errorResponse.message);
             }
         }
         catch (Exception ex)
@@ -134,8 +161,8 @@
     public class SuccessResponse
     {
         public string message { get; set; } = string.Empty;
-        public string dexMeterID { get; set; } = string.Empty;
-        public string dexLaneMeterID { get; set; } = string.Empty;
+        public DexMeter DEXMeterID { get; set; } = new();
+        public DexLaneMeter DEXLaneMeterID { get; set; } = new();
         public string status { get; set; } = string.Empty;
     }
 
@@ -143,5 +170,24 @@
     {
         public string message { get; set; } = string.Empty;
         public string status { get; set; } = string.Empty;
+    }
+
+    public class DexMeter
+    {
+        public Guid ID { get; set; }
+        public char Machine { get; set; }
+        public DateTime DEXDateTime { get; set; }
+        public string MachineSerialNumber { get; set; } = string.Empty;
+        public decimal ValueOfPaidVends { get; set; }
+    }
+
+    public class DexLaneMeter
+    {
+        public Guid ID { get; set; }
+        public Guid DEXMeterID { get; set; }
+        public string ProductIdentifier { get; set; } = string.Empty;
+        public decimal Price { get; set; } 
+        public int NumberOfVends { get; set; } 
+        public decimal ValueOfPaidSales { get; set; }
     }
 }

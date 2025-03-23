@@ -12,6 +12,7 @@ To ensure the project runs correctly, follow the steps below after cloning the r
 ## 2. Configure the Database Connection
 - Make sure to add the connection string for the database in the **appsettings.json** file or the environment settings for the project.
 - The connection string should be in the correct format based on the database type you are using (SQL Server, MySQL, etc.).
+- Restore the backupDatabase.bak in your local machine
 
 ## 3. Select Multiple Startup Projects
 - To ensure the application runs properly, you need to select multiple startup projects.

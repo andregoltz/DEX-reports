@@ -21,13 +21,14 @@ namespace DEX.API.Extensions
 
                 try
                 {
+                    //Calling Service to parse the information
                     var (dEXMeter, dEXLaneMeter) = await service.ProcessDEXFileAsync(request.DexFile, request.Machine);
 
                     return Results.Ok(new
                     {
                         Message = "DEX file saved successfully.",
-                        DEXMeterID = dEXMeter.ID,
-                        DEXLaneMeterID = dEXLaneMeter.ID,
+                        DEXMeterID = dEXMeter,
+                        DEXLaneMeterID = dEXLaneMeter,
                         status = "success"
                     });
                 }
