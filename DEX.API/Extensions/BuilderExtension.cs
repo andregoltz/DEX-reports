@@ -1,14 +1,22 @@
-﻿namespace DEX.API.Extensions
+﻿using DEX.API.AuthenticationHandler;
+using DEX.Core.Services;
+using DEX.Infra.Repository;
+using Microsoft.AspNetCore.Authentication;
+
+namespace DEX.API.Extensions
 {
     public static class BuilderExtension
     {
-        public static void AddOpenApi(this WebApplicationBuilder builder)
+        public static void AddConfiguration(this WebApplicationBuilder builder)
         {
-            builder.Services.AddOpenApi();
-        }
+            builder.Services.AddRazorPages();
+            builder.Services.AddServerSideBlazor();
+            builder.Services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            builder.Services.AddAuthorization();
 
-        public static void AddCors(this WebApplicationBuilder builder)
-        {
+            builder.Services.AddOpenApi();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowBlazorApp",
@@ -16,6 +24,10 @@
                                     .AllowAnyMethod()
                                     .AllowAnyHeader());
             });
+
+            builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddScoped<DEXRepository>();
+            builder.Services.AddScoped<DEXService>();
         }
     }
 }

@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEX.API", "DEX.API\DEX.API.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEX.UI", "DEX.UI\DEX.UI.csproj", "{C9D8555D-534D-8802-8964-D38AB2EACB8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEX.Core", "DEX.Core\DEX.Core.csproj", "{9A57C888-A073-4D9D-AA91-D6257DB3647A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEX.Infra", "DEX.Infra\DEX.Infra.csproj", "{B9CDD1D0-1312-4099-B66C-ED360C3D9E0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +25,19 @@ Global
 		{C9D8555D-534D-8802-8964-D38AB2EACB8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9D8555D-534D-8802-8964-D38AB2EACB8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9D8555D-534D-8802-8964-D38AB2EACB8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A57C888-A073-4D9D-AA91-D6257DB3647A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A57C888-A073-4D9D-AA91-D6257DB3647A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A57C888-A073-4D9D-AA91-D6257DB3647A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A57C888-A073-4D9D-AA91-D6257DB3647A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CDD1D0-1312-4099-B66C-ED360C3D9E0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CDD1D0-1312-4099-B66C-ED360C3D9E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CDD1D0-1312-4099-B66C-ED360C3D9E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CDD1D0-1312-4099-B66C-ED360C3D9E0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0C5CD21-48C7-4D73-A2A0-FE7F443644E4}
 	EndGlobalSection
 EndGlobal
