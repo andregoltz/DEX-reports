@@ -81,24 +81,28 @@
                     };
 
                 var successResponse = JsonSerializer.Deserialize<SuccessResponse>(result, options);
+
+                var laneMetersDetails = string.Join("\n", successResponse!.DEXLaneMeterID!.Select(lm => $@"
+                    - ID: {lm.ID}
+                    - DEXMeter ID: {lm.DEXMeterID}
+                    - Product Identifier: {lm.ProductIdentifier}
+                    - Price: {lm.Price}
+                    - Number of Vends: {lm.NumberOfVends}
+                    - Value of Paid Sales: {lm.ValueOfPaidSales}").ToList());
+
                 var message = $@"
-                        Status: {successResponse.status}
-                        Message: {successResponse.message}
+                    Status: {successResponse!.status}
+                    Message: {successResponse.message}
 
-                        DEXMeter Details:
-                        - ID: {successResponse.DEXMeterID.ID}
-                        - Machine: {successResponse.DEXMeterID.Machine}
-                        - DEX DateTime: {successResponse.DEXMeterID.DEXDateTime}
-                        - Machine Serial Number: {successResponse.DEXMeterID.MachineSerialNumber}
-                        - Value of Paid Vends: {successResponse.DEXMeterID.ValueOfPaidVends}
-
+                    DEXMeter Details:
+                    - ID: {successResponse.DEXMeterID.ID}
+                    - Machine: {successResponse.DEXMeterID.Machine}
+                    - DEX DateTime: {successResponse.DEXMeterID.DEXDateTime}
+                    - Machine Serial Number: {successResponse.DEXMeterID.MachineSerialNumber}
+                    - Value of Paid Vends: {successResponse.DEXMeterID.ValueOfPaidVends}
+                       
                         DEXLaneMeter Details:
-                        - ID: {successResponse.DEXLaneMeterID.ID}
-                        - DEXMeter ID: {successResponse.DEXLaneMeterID.DEXMeterID}
-                        - Product Identifier: {successResponse.DEXLaneMeterID.ProductIdentifier}
-                        - Price: {successResponse.DEXLaneMeterID.Price}
-                        - Number of Vends: {successResponse.DEXLaneMeterID.NumberOfVends}
-                        - Value of Paid Sales: {successResponse.DEXLaneMeterID.ValueOfPaidSales}"
+                        {laneMetersDetails}"
                             .Replace("\r\n", "\n").Trim();
 
                 ShowSuccessMessage(message);
@@ -106,7 +110,7 @@
             else
             {
                 var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(result);
-                ShowErrorMessage(errorResponse.message);
+                ShowErrorMessage(errorResponse!.message);
             }
         }
         catch (Exception ex)
@@ -132,7 +136,7 @@
             if (response.IsSuccessStatusCode)
             {
                 var successResponse = JsonSerializer.Deserialize<SuccessResponse>(result);
-                ShowSuccessMessage(successResponse.message);
+                ShowSuccessMessage(successResponse!.message);
             }
             else
             {
@@ -162,7 +166,7 @@
     {
         public string message { get; set; } = string.Empty;
         public DexMeter DEXMeterID { get; set; } = new();
-        public DexLaneMeter DEXLaneMeterID { get; set; } = new();
+        public List<DexLaneMeter> DEXLaneMeterID { get; set; } = new();
         public string status { get; set; } = string.Empty;
     }
 

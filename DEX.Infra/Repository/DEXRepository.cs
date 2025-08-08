@@ -8,7 +8,7 @@ namespace DEX.Infra.Repository
 {
     public class DEXRepository(IConfiguration configuration)
     {
-        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection");
+        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
 
         public async Task SaveDEXMeterAsync(DEXMeter meter)
@@ -37,22 +37,31 @@ namespace DEX.Infra.Repository
             }
         }
 
-        public async Task SaveDEXLaneMeterAsync(DEXLaneMeter laneMeter)
+        public async Task SaveDEXLaneMetersAsync(IEnumerable<DEXLaneMeter> laneMeters)
         {
             try
             {
                 using var connection = new SqlConnection(_connectionString);
                 await connection.OpenAsync();
-                var parameters = new
+
+                foreach (var laneMeter in laneMeters)
                 {
-                    ID = laneMeter.ID,
-                    DEXMeterID = laneMeter.DEXMeterID,
-                    ProductIdentifier = laneMeter.ProductIdentifier,
-                    Price = laneMeter.Price,
-                    ValueOfPaidSales = laneMeter.ValueOfPaidSales,
-                    NumberOfVends = laneMeter.NumberOfVends
-                };
-                await connection.ExecuteAsync("SaveDEXLaneMeter", parameters, commandType: CommandType.StoredProcedure);
+                    var parameters = new
+                    {
+                        ID = laneMeter.ID,
+                        DEXMeterID = laneMeter.DEXMeterID,
+                        ProductIdentifier = laneMeter.ProductIdentifier,
+                        Price = laneMeter.Price,
+                        ValueOfPaidSales = laneMeter.ValueOfPaidSales,
+                        NumberOfVends = laneMeter.NumberOfVends
+                    };
+
+                    await connection.ExecuteAsync(
+                        "SaveDEXLaneMeter",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+                }
             }
             catch (SqlException)
             {
@@ -60,7 +69,7 @@ namespace DEX.Infra.Repository
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
 

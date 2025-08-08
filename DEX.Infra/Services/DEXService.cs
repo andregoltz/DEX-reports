@@ -13,27 +13,30 @@ namespace DEX.Core.Services
             _repository = repository;
         }
 
-        public async Task<(DEXMeter, DEXLaneMeter)> ProcessDEXFileAsync(string dexFile, char machine)
+        public async Task<(DEXMeter dexMeter, List<DEXLaneMeter> dexLaneMeters)> ProcessDEXFileAsync(string dexFile, char machine)
         {
-            //Decode DEX File
-            string machineSerialNumber = DEXHelper.DecodeID1(dexFile);
-            DateTime dexDateTime = DEXHelper.DecodeID5(dexFile);
-            decimal valueOfPaidVends = DEXHelper.DecodeVA1(dexFile);
+            var parsedDexFile = DEXHelper.ParseDexFile(dexFile);
 
-            var (productIdentifier, price) = DEXHelper.DecodePA1(dexFile);
-            var (numberOfVends, valueOfPaidSales) = DEXHelper.DecodePA2(dexFile);
+            var dexMeter = new DEXMeter(Guid.NewGuid(), machine, parsedDexFile.ID5, parsedDexFile.ID1, parsedDexFile.VA1);
 
-            //Create DexMeter Data
-            DEXMeter dEXMeter = new(Guid.NewGuid(), machine, dexDateTime, machineSerialNumber, valueOfPaidVends);
+            var dexLaneMeters = new List<DEXLaneMeter>();
 
-            //Create DexLaneMeter Data
-            DEXLaneMeter dEXLaneMeter = new(Guid.NewGuid(), dEXMeter.ID, productIdentifier, price, numberOfVends, valueOfPaidSales);
+            foreach (var (ProductIdentifier, Price, NumberOfVends, ValueOfPaidSales) in parsedDexFile.PARecords)
+            {
+                dexLaneMeters.Add(new DEXLaneMeter(
+                    Guid.NewGuid(),
+                    dexMeter.ID,
+                    ProductIdentifier,
+                    Price,
+                    NumberOfVends,
+                    ValueOfPaidSales
+                ));
+            }
 
-            // Save data asynchronously
-            await _repository.SaveDEXMeterAsync(dEXMeter);
-            await _repository.SaveDEXLaneMeterAsync(dEXLaneMeter);
+            await _repository.SaveDEXMeterAsync(dexMeter);
+            await _repository.SaveDEXLaneMetersAsync(dexLaneMeters);
 
-            return (dEXMeter, dEXLaneMeter);
+            return (dexMeter, dexLaneMeters);
         }
     }
 }

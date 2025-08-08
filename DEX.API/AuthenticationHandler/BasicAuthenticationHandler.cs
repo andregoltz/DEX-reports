@@ -17,18 +17,20 @@ namespace DEX.API.AuthenticationHandler
             _configuration = configuration;
         }
 
-        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             if (!Request.Headers.ContainsKey("Authorization"))
             {
-                return AuthenticateResult.Fail("Missing Authorization Header");
+                return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));
             }
 
-            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(authHeader?.Parameter)).Split(':');
+            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]!);
+            var credentials = Encoding.UTF8
+                .GetString(Convert.FromBase64String(authHeader?.Parameter!))
+                .Split(':');
             if (credentials.Length != 2)
             {
-                return AuthenticateResult.Fail("Invalid Authorization Header");
+                return Task.FromResult(AuthenticateResult.Fail("Invalid Authorization Header"));
             }
 
             var username = _configuration["Authentication:Username"];
@@ -40,13 +42,14 @@ namespace DEX.API.AuthenticationHandler
                 var identity = new ClaimsIdentity(claims, Scheme.Name);
                 var principal = new ClaimsPrincipal(identity);
                 var ticket = new AuthenticationTicket(principal, Scheme.Name);
-                return AuthenticateResult.Success(ticket);
+                return Task.FromResult(AuthenticateResult.Success(ticket));
             }
             else
             {
-                return AuthenticateResult.Fail("Invalid username or password");
+                return Task.FromResult(AuthenticateResult.Fail("Invalid username or password"));
             }
         }
+
     }
 }
 
